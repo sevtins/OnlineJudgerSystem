@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+    题目列表
+{% endblock %}
+
+{% block content %}
+    <table class="table table-striped">
+    <thead>
+    <tr>
+        <td>序号</td>
+        <td>标题</td>
+        <td>作者</td>
+        <td>难度</td>
+        <td>题解数量</td>
+        <td>提交数量</td>
+        <td>正确数量</td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for proble_list in proble_lists %}
+        <tr>
+            <td>{{ proble_list.id }}</td>
+            <td>{{ proble_list.title }}</td>
+            <td>{{ proble_list.fk_author.username }}</td>
+            <td>{{ proble_list.get_difficulty_display }}</td>
+            <td>{{ proble_list.explains }}</td>
+            <td>{{ proble_list.Submits }}</td>
+            <td>{{ proble_list.corrects }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}
