@@ -1,7 +1,4 @@
 {% extends 'base.html' %}
-{% block title %}
-    题目列表
-{% endblock %}
 
 {% block content %}
     <table class="table table-striped">
@@ -20,7 +17,7 @@
     {% for proble_list in proble_lists %}
         <tr>
             <td>{{ proble_list.id }}</td>
-            <td>{{ proble_list.title }}</td>
+            <td><a href="{% url 'problem:problemdetail' proble_list.id %}">{{ proble_list.title }}</a></td>
             <td>{{ proble_list.fk_author.username }}</td>
             <td>{{ proble_list.get_difficulty_display }}</td>
             <td>{{ proble_list.explains }}</td>
