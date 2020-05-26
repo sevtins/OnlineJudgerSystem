@@ -10,6 +10,9 @@ class ProblemLabel(models.Model):
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="标签创建题目时间")
     fk_author = models.ForeignKey(to=User, on_delete=models.CASCADE, verbose_name="作者")
 
+    def __str__(self):
+        return self.name
+
 
 class Problem(models.Model):
     """

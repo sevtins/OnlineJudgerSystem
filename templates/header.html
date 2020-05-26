@@ -6,10 +6,11 @@
 	<div>
 		<ul class="nav navbar-nav">
 			<li><a href="#">探索</a></li>
-			<li><a href="#">题库</a></li>
+			<li><a href="{% url 'problem:problemList' %}">题库</a></li>
             <li><a href="#">竞赛</a></li>
 		</ul>
         {#% 登陆成功 %#}
+        {% if user.is_authenticated %}
         <ul class='nav navbar-nav navbar-right'>
             <li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -32,17 +33,19 @@
                     <li><a>我的笔记本</a></li>
                     <li><a>我的提交记录</a></li>
                     <li><a>我的题解</a></li>
-                    <li><a>退出</a></li>
+                    <li><a href="{% url 'account:logout' %}">退出</a></li>
                 </ul>
             </li>
 
         </ul>
+        {% else %}
         {#% 登陆成功 %#}
         {# 未登录 #}
         <ul class='nav navbar-nav navbar-right'>
-            <li><a>登陆</a></li>
-            <li><a>注册</a></li>
+            <li><a href="{% url 'account:login' %}">登陆</a></li>
+            <li><a href="{% url 'account:register' %}">注册</a></li>
         </ul>
+        {% endif %}
         {# 未登录 #}
 
 

@@ -13,7 +13,12 @@
         </div>
     {% endif %}
 
+    <div class="col-md-8">
+
+
     <h2>{{ problem_content.title }}</h2>
+        <small>点赞</small>
+        <small>收藏</small>
 
     <h3>题目描述</h3>
     {{ problem_content.problem_content }}
@@ -29,6 +34,18 @@
         <br>
         <input type="submit" class="btn btn-info">
     </form>
+    </div>
+
+    <div class="col-md-4">
+        笔记本
+        <textarea class="md-textarea form-control" row="10"></textarea>
+        <div>
+            提交统计图
+        </div>
+        <dvi>
+            查看题解
+        </dvi>
+    </div>
 
 
 {% endblock %}
