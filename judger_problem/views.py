@@ -1,10 +1,12 @@
+import json
+
 from django.shortcuts import render
 from django.views import View
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 import requests
-import json
-import pdb
 
-from .models import Problem
+from .models import Problem, SubmitStatus
 
 
 # from .forms import SubmitForm
@@ -23,6 +25,7 @@ class ProblemList(View):
         return render(request, template_name="judger_problem/templates/problem_list.html", context=context)
 
 
+@method_decorator(login_required, name="dispatch")
 class ProblemDetail(View):
     """
     展示题目详情的视图
@@ -36,9 +39,9 @@ class ProblemDetail(View):
         :param kwargs:
         :return:
         """
-        problem_content = Problem.objects.filter(id=kwargs["problem_id"])[0]
+        problem = Problem.objects.filter(id=kwargs["problem_id"])[0]
         context = {
-            "problem_content": problem_content
+            "problem_content": problem
         }
         return render(request=request, template_name="judger_problem/templates/problem_detail.html", context=context)
 
@@ -50,9 +53,11 @@ class ProblemDetail(View):
         :return: 返回get请求同样的内容外，还返回用户代码提交结果信息mess,
                  以及status; error:表示用户代码无法运行, success:表示用户代码可以运行但是输出不一定正确
         """
-        problem_content = Problem.objects.filter(id=kwargs["problem_id"])[0]
+
+        # 获取model对象problem
+        problem = Problem.objects.filter(id=kwargs["problem_id"])[0]
         context = {
-            "problem_content": problem_content,
+            "problem_content": problem,
             "mess": "",
         }
 
@@ -62,21 +67,39 @@ class ProblemDetail(View):
         user_code = request.POST['user_code']
         data = {
             "user_code": user_code,
-            "user_input": problem_content.problem_input,
+            "user_input": problem.problem_input,
         }
+
+        # 设置提交状态
+        submit_status = SubmitStatus()
+        submit_status.fk_problem_id = problem
+        submit_status.user_code_content = user_code
+        submit_status.author = request.user
+
         # TODO ip地址应该写进环境变量中
         result = requests.post("http://120.92.173.80:8080/", data=data)
         # result = str(result, "utf-8")
         result = json.loads(result.text)
 
+        # 用户代码不可以运行
         if result["status"] == "error":
             context["status"] = "error"
             context["mess"] = "代码无法运行"
+            submit_status.user_code_status = "代码无法运行"
+            submit_status.save()
             return render(request, template_name="judger_problem/templates/problem_detail.html", context=context)
-        if problem_content.problem_output == result["output"]:
+
+        # 用户代码可运行，检测答案是否正确
+        if problem.problem_output == result["output"]:
             context["status"] = "success"
             context["mess"] = "答案正确"
+            submit_status.user_code_status = "正确"
         else:
             context["status"] = "success"
             context["mess"] = "答案错误，请检查你的代码逻辑"
+            submit_status.user_code_status = "错误"
+        submit_status.save()
         return render(request, template_name="judger_problem/templates/problem_detail.html", context=context)
+
+
+

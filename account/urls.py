@@ -8,4 +8,6 @@ urlpatterns = [
     path("sendemail/", views.sendEmailView, name="SendEmail"),
     path("login/", views.LoginView.as_view(), name="login"),
     path("logout/", views.logoutView, name="logout"),
+    path("submit_record/", views.submit_status_list_view, name="submit_record"),
+    path("show-user-submited-code/", views.show_user_submited_code, name="show_user_submited_code")
 ]

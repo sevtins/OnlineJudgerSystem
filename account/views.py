@@ -12,6 +12,9 @@ from django.contrib.auth import logout
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+
+from judger_problem.models import SubmitStatus
 
 
 class LoginView(View):
@@ -76,3 +79,34 @@ def sendEmailView(request):
             [request.GET['email']],
         )
         RegisterView.code4 = code4
+
+
+@login_required
+def submit_status_list_view(request):
+    """
+    查看提交状态
+    :param request:
+    :return:
+    """
+    if request.method == "GET":
+        submit_list = SubmitStatus.objects.filter(author=request.user)
+        context = {
+            "submit_list": submit_list
+        }
+        return render(request, template_name="account/templates/submit_list.html", context=context)
+
+
+@login_required
+def show_user_submited_code(request):
+    """
+    展示用户提交的代码
+    :param request:
+    :return:
+    """
+    if request.method == "GET":
+        submit_id = request.GET['id']
+        submit = SubmitStatus.objects.filter(id=submit_id)[0]
+        context = {
+            "user_code": submit.user_code_content
+        }
+        return render(request, template_name="account/templates/show_user_submited_code.html", context=context)

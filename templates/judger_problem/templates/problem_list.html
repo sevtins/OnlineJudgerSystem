@@ -19,7 +19,7 @@
             <tbody>
             {% for proble_list in proble_lists %}
                 <tr>
-                    <td>{{ proble_list.id }}</td>
+                    <td>{{ forloop.counter }}</td>
                     <td><a href="{% url 'problem:problemdetail' proble_list.id %}">{{ proble_list.title }}</a></td>
                     <td>{{ proble_list.fk_author.username }}</td>
                     <td>{{ proble_list.get_difficulty_display }}</td>
