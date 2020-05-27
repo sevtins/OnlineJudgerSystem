@@ -1,8 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="col-md-10">
-
+    <div class="col-md-9">
 
         <table class="table table-striped">
             <thead>
@@ -33,10 +32,32 @@
     <div>分页</div>
     </div>
 
-    <div class="col-md-2" style="">
-        <div>
-            我的进展
-        </div>
+    <div class="col-md-3" style="">
+            <div>
+                做题统计:
+                <div id="main" style="width: 250px;height:250px;"></div>
+
+                <script>
+                    // 绘制图表。
+                    echarts.init(document.getElementById('main')).setOption({
+                        title:{
+                          {#text: '做题统计' // 饼图的标题#}
+                        },
+                        series: {
+                            type: 'pie', // 图表是饼图
+                            radius:'50%', // 饼图的半径
+                            data: [
+                                {name: "未解决", value: {{ problem_count }}},
+                                {name: '已解决', value: {{ solve_count }}},
+                            ]
+                        }
+                    });
+                </script>
+                <small>已解决:<b>{{ solve_count }}</b></small>
+                <br>
+                <small>未解决:<b>{{ problem_count }}</b></small>
+            </div>
+        <hr>
         <div>
             标签分类
         </div>

@@ -11,7 +11,7 @@ from .models import Problem, SubmitStatus
 
 # from .forms import SubmitForm
 
-
+@method_decorator(login_required, name="dispatch")
 class ProblemList(View):
     """
     题目列表视图
@@ -19,8 +19,16 @@ class ProblemList(View):
 
     def get(self, request):
         proble_lists = Problem.get_problem_list()
+
+        # 已解决题目数量
+        solve_count = len(SubmitStatus.objects.filter(user_code_status="正确", author=request.user))
+        # 未解决题目数量
+        problem_count = Problem.objects.count() - solve_count
+
         context = {
-            "proble_lists": proble_lists
+            "proble_lists": proble_lists,
+            "problem_count": problem_count,
+            "solve_count": solve_count,
         }
         return render(request, template_name="judger_problem/templates/problem_list.html", context=context)
 
@@ -100,6 +108,3 @@ class ProblemDetail(View):
             submit_status.user_code_status = "错误"
         submit_status.save()
         return render(request, template_name="judger_problem/templates/problem_detail.html", context=context)
-
-
-
