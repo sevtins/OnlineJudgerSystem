@@ -58,7 +58,7 @@ class RegisterView(View):
                 return HttpResponse('错误：两次密码不一致')
             user = User.objects.create_user(username=username, email=useremail, password=password)
             user.save()
-            return HttpResponse("注册成功")
+            return HttpResponseRedirect(reverse('account:login'))
 
 
 def sendEmailView(request):
