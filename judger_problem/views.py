@@ -4,12 +4,11 @@ from django.shortcuts import render
 from django.views import View
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 import requests
 
 from .models import Problem, SubmitStatus
 
-
-# from .forms import SubmitForm
 
 @method_decorator(login_required, name="dispatch")
 class ProblemList(View):
@@ -18,12 +17,17 @@ class ProblemList(View):
     """
 
     def get(self, request):
-        proble_lists = Problem.get_problem_list()
+        proble_list_all = Problem.get_problem_list()
 
         # 已解决题目数量
         solve_count = len(SubmitStatus.objects.filter(user_code_status="正确", author=request.user))
         # 未解决题目数量
         problem_count = Problem.objects.count() - solve_count
+
+        # 分页
+        pagetor = Paginator(proble_list_all, 10)
+        page = request.GET.get('page') if request.GET.get('page') is not None else 1
+        proble_lists = pagetor.get_page(page)
 
         context = {
             "proble_lists": proble_lists,

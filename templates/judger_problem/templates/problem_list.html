@@ -29,7 +29,17 @@
             {% endfor %}
             </tbody>
         </table>
-    <div>分页</div>
+    <div>
+        <ul class="pager">
+            {% if proble_lists.has_previous %}
+                <li class="previous"><a href="?page={{ proble_lists.previous_page_number }}">&larr; 上一页</a></li>
+            {% endif %}
+            <li class="">第{{ proble_lists.number }}页</li>
+            {% if proble_lists.has_next %}
+                <li class="next"><a href="?page={{ proble_lists.next_page_number }}">下一页 &rarr;</a></li>
+            {% endif%}
+        </ul>
+    </div>
     </div>
 
     <div class="col-md-3" style="">
